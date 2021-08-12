@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from win32_setfiletime import setatime
+from win32_setfiletime import setatime, setmtime, setctime
 
 
 def getatime(filepath):
@@ -132,3 +132,27 @@ def test_ctime_not_modified(tmp_path):
     time.sleep(0.1)
     setatime(filepath, 123456789)
     assert os.path.getctime(str(filepath)) == before
+
+
+def test_setatime_on_directory(tmp_path):
+    NEW_TIME = 100
+    dirpath = tmp_path / 'test_setatime_on_directory'
+    dirpath.mkdir()
+    setatime(dirpath, NEW_TIME)
+    assert os.path.getatime(str(dirpath)) == NEW_TIME
+
+
+def test_setmtime_on_directory(tmp_path):
+    NEW_TIME = 100
+    dirpath = tmp_path / 'test_setmtime_on_directory'
+    dirpath.mkdir()
+    setmtime(dirpath, NEW_TIME)
+    assert os.path.getmtime(str(dirpath)) == NEW_TIME
+
+
+def test_setctime_on_directory(tmp_path):
+    NEW_TIME = 100
+    dirpath = tmp_path / 'test_setctime_on_directory'
+    dirpath.mkdir()
+    setctime(dirpath, NEW_TIME)
+    assert os.path.getctime(str(dirpath)) == NEW_TIME
