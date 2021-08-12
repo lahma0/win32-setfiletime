@@ -52,7 +52,11 @@ def setctime(filepath, timestamp):
     mtime = wintypes.FILETIME(0xFFFFFFFF, 0xFFFFFFFF)
     ctime = wintypes.FILETIME(timestamp & 0xFFFFFFFF, timestamp >> 32)
 
-    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, 128, None))
+    flag = 128
+    if os.path.isdir(filepath):
+        flag |= 0x02000000  # for directory, you have to set flag FILE_FLAG_BACKUP_SEMANTICS when opening
+
+    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, flag, None))
     if handle.value == wintypes.HANDLE(-1).value:
         raise WinError()
 
@@ -78,7 +82,11 @@ def setmtime(filepath, timestamp):
     mtime = wintypes.FILETIME(timestamp & 0xFFFFFFFF, timestamp >> 32)
     ctime = wintypes.FILETIME(0xFFFFFFFF, 0xFFFFFFFF)
 
-    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, 128, None))
+    flag = 128
+    if os.path.isdir(filepath):
+        flag |= 0x02000000  # for directory, you have to set flag FILE_FLAG_BACKUP_SEMANTICS when opening
+
+    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, flag, None))
     if handle.value == wintypes.HANDLE(-1).value:
         raise WinError()
 
@@ -104,7 +112,11 @@ def setatime(filepath, timestamp):
     mtime = wintypes.FILETIME(0xFFFFFFFF, 0xFFFFFFFF)
     ctime = wintypes.FILETIME(0xFFFFFFFF, 0xFFFFFFFF)
 
-    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, 128, None))
+    flag = 128
+    if os.path.isdir(filepath):
+        flag |= 0x02000000  # for directory, you have to set flag FILE_FLAG_BACKUP_SEMANTICS when opening
+
+    handle = wintypes.HANDLE(CreateFileW(filepath, 256, 0, None, 3, flag, None))
     if handle.value == wintypes.HANDLE(-1).value:
         raise WinError()
 
